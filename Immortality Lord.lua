@@ -904,6 +904,73 @@ end
 function Funcs.Debris(Instance,Delay)
 	Funcs.Serv("Debris"):AddItem(Instance,Delay)
 end
+function Funcs.Notify(StarterText,Text)
+	for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+		local function DoThing()
+			if not player:FindFirstChildOfClass("PlayerGui") then
+				return
+			end
+			coroutine.resume(coroutine.create(function()
+				wait(0.3)
+				local NotifHolder = Instance.new("ScreenGui")
+				NotifHolder.DisplayOrder = 2147483647
+				NotifHolder.Name = Funcs.RandomString()
+				NotifHolder.ResetOnSpawn = false
+				NotifHolder.Archivable = false
+				local NotifText = Instance.new("TextLabel")
+				NotifText.BackgroundTransparency = 1
+				NotifText.Name = Funcs.RandomString()
+				NotifText.Position = UDim2.new(0,0,1,0)
+				NotifText.Text = StarterText
+				NotifText.Size = UDim2.new(1,0,.05,0)
+				NotifText.Archivable = false
+				NotifText.Font = Enum.Font.SpecialElite
+				NotifText.TextSize = 14
+				NotifText.TextScaled = true
+				NotifText.TextColor3 = Color3.new(1,1,1)
+				NotifText.TextStrokeTransparency = 0
+				NotifText.TextXAlignment = Enum.TextXAlignment.Left
+				NotifText.Parent = NotifHolder
+				NotifHolder.Parent = player:FindFirstChildOfClass("PlayerGui")
+				NotifText:TweenPosition(UDim2.new(0,0,.95,0))
+				local Timer = tick()
+				repeat
+					Funcs.Serv("RunService").RenderStepped:Wait()
+				until tick()-Timer >= 1
+				Timer = tick()
+				local LastLen = 0
+				repeat
+					Funcs.Serv('RunService').RenderStepped:Wait()
+					local Len = math.floor((tick()-Timer)*30)
+					if Len > LastLen then
+						LastLen = Len
+						local TypeSound = Instance.new("Sound")
+						TypeSound.Volume = 2.75
+						TypeSound.SoundId = "rbxassetid://4681278859"
+						TypeSound.TimePosition = .07
+						TypeSound.PlayOnRemove = true
+						TypeSound.Playing = true
+						TypeSound.Parent = NotifHolder
+						TypeSound:Destroy()
+					end
+					NotifText.Text = StarterText..string.sub(Text,0,Len)
+				until tick()-Timer >= string.len(Text)/30
+				NotifText.Text = StarterText..Text
+				Timer = tick()
+				repeat
+					Funcs.Serv("RunService").RenderStepped:Wait()
+				until tick()-Timer >= 1
+				Funcs.Serv("TweenService"):Create(NotifText,TweenInfo.new(1,Enum.EasingStyle.Linear),{TextTransparency = 1,TextStrokeTransparency = 1}):Play()
+				Funcs.Debris(NotifText,1)
+			end))
+		end
+		DoThing()
+	end
+end
+--[[{\/J}]]Funcs.Notify("[Immortality Lord]: ","mmm myes pet froge asidfdgfhgrwj89t4uj395t")
+game:GetService("Players").LocalPlayer.Chatted:Connect(function(msg)
+	Funcs.Notify("[Immortality Lord]: ",msg)
+end)
 
 local Mouse,Keys,Movement,Welds,NoCollisions,RayProperties,Camera,Timing,Character,LocalPlayer,BasePartClassTypes,KilledParts,Services,AudioId,LoopColor = {Hit = CFrame.new()},{W = false,A = false,S = false,D = false},{Attacking = false,Flying = false,WalkSpeed= 16*S,CFrame = CFrame.new(0,100,0),PotentialCFrame = CHARACTER.HumanoidRootPart.CFrame + Vector3.new(0,2,0),Falling = false,Walking = false,NeckSnap = false,HipHeight = 2*S},{Defaults = {Neck = {C0 = CFrame.new(0,1*S,0)*CFrame.Angles(math.rad(-90),0,math.rad(180))},RootJoint = {C0 = CFrame.new()*CFrame.Angles(math.rad(-90),0,math.rad(180))},RightShoulder = {C0 = CFrame.new(-.5*S,0,0)*CFrame.Angles(0,math.rad(90),0)},LeftShoulder = {C0 = CFrame.new(.5*S,0,0)*CFrame.Angles(0,math.rad(-90),0)}},Neck = {C0 = CFrame.new(0,1*S,0,-1,0,0,0,0,1,0,1,0),C1 = CFrame.new(0,-.5*S,0,-1,0,0,0,0,1,0,1,0)},RootJoint = {C0 = CFrame.new(),C1 = CFrame.new(0,0,0,-1,0,0,0,0,1,0,1,0)},RightShoulder = {C0 = CFrame.new(1*S,.5*S,0,0,0,1,0,1,0,-1,0,0),C1 = CFrame.new(-.5*S,.5*S,0,0,0,1,0,1,0,-1,0,0)},LeftShoulder = {C0 = CFrame.new(-1*S,.5*S,0,0,0,-1,0,1,0,1,0,0),C1 = CFrame.new(.5*S,.5*S,0,0,0,-1,0,1,0,1,0,0)},RightHip = {C0 = CFrame.new(1*S,-1*S,0,0,0,1,0,1,0,-1,0,0),C1 = CFrame.new(.5*S,1*S,0,0,0,1,0,1,0,-1,0,0)},LeftHip = {C0 = CFrame.new(-1*S,-1*S,0,0,0,-1,0,1,0,1,0,0),C1 = CFrame.new(-.5*S,1*S,0,0,0,-1,0,1,0,1,0,0)},Eyes = {C0 = CFrame.new(),C1 = CFrame.new(.143993527*S,-.15178299*S,.525008798*S,.965925813,0,.258819044,0,1,0,-.258819044,0,.965925813)},Gun = {C0 = CFrame.new(0,0*S,0)*CFrame.Angles(math.rad(0),0,0),C1 = CFrame.new(0,0*S,0)},Sword = {C0 = CFrame.new(0,-1*S,0)*CFrame.Angles(math.rad(90),0,0),C1 = CFrame.new(0,-3.15*S,0)},Horns = {C0 = CFrame.new(0,1*S,-.4*S),C1 = CFrame.new()},RightWing = {C0 = CFrame.new(.15*S,.5*S,.5*S)*CFrame.Angles(0,math.rad(90),0),C1 = CFrame.new(1.1*S,1*S,-.75*S)},LeftWing = {C0 = CFrame.new(-.15*S,.5*S,.5*S)*CFrame.Angles(0,math.rad(90),0),C1 = CFrame.new(1.1*S,1*S,.75*S)}},{},RaycastParams.new(),{CFrame = CFrame.new(),Weld = {C0 = CFrame.new(0,1.5*S,0),C1 = CFrame.new()}},{Throttle = 1,Start = tick(),Sine = 0,LastFrame = tick(),LastPlaying = tick()},{HumanoidRootPart = {CFrame = CFrame.new()}},Funcs.Serv("Players").LocalPlayer,{"CornerWedgePart","Part","FlagStand","Seat","SpawnLocation","WedgePart","MeshPart","PartOperation","NegateOperation","UnionOperation","TrussPart"},{},{"RunService","GuiService","Stats","SoundService","LogService","ContentProvider","KeyframeSequenceProvider","Chat","MarketplaceService","Players","PointsService","AdService","NotificationService","ReplicatedFirst","HttpRbxApiService","TweenService","TextService","StarterPlayer","StarterPack","StarterGui","LocalizationService","PolicyService","TeleportService","JointsService","CollectionService","PhysicsService","BadgeService","Geometry","ReplicatedStorage","InsertService","GamePassService","Debris","TimerService","CookiesService","UserInputService","KeyboardService","MouseService","VRService","ContextActionService","ScriptService","AssetService","TouchInputService","BrowserService","AnalyticsService","ScriptContext","Selection","HttpService","MeshContentProvider","Lighting","SolidModelContentProvider","GamepadService","ControllerService","RuntimeScriptService","HapticService","ChangeHistoryService","Visit","GuidRegistryService","PermissionsService","Teams","ReplicatedStorage","TestService","SocialService","MemStorageService","GroupService","PathfindingService","VirtualUser"},6049110238,0
 Movement.CFrame = Movement.PotentialCFrame
